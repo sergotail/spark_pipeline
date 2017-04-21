@@ -95,10 +95,10 @@ ENV/
 *.fits
 *.cat
 *.xml
-*logs/
-*temp/
-*catalogs/
-*images/
-*stacks/
+*log*/
+*temp*/
+*catalogs*/
+*images*/
+*stacks*/
 *.ipynb_checkpoints/
 
