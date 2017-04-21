@@ -87,3 +87,18 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+
+
+# Project-specific formats
+*~
+*.fits
+*.cat
+*.xml
+*logs/
+*temp/
+*catalogs/
+*images/
+*stacks/
+*.ipynb_checkpoints/
+
