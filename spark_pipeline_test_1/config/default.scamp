@@ -50,7 +50,7 @@ POSANGLE_MAXERR        5.0             # Max position-angle uncertainty (deg)
 POSITION_MAXERR        1.0             # Max positional uncertainty (arcmin)
 MATCH_RESOL            0               # Matching resolution (arcsec); 0=auto
 MATCH_FLIPPED          N               # Allow matching with flipped axes?
-MOSAIC_TYPE            SAME_CRVAL       # UNCHANGED, SAME_CRVAL, SHARE_PROJAXIS,
+MOSAIC_TYPE            UNCHANGED       # UNCHANGED, SAME_CRVAL, SHARE_PROJAXIS,
                                        # FIX_FOCALPLANE or LOOSE
 FIXFOCALPLANE_NMIN     1               # Min number of dets for FIX_FOCALPLANE
  
@@ -133,7 +133,7 @@ AHEADER_SUFFIX         .ahead          # Filename extension for additional
 HEADER_SUFFIX          .head           # Filename extension for OUTPUT headers
 HEADER_TYPE            NORMAL          # NORMAL or FOCAL_PLANE
 VERBOSE_TYPE           NORMAL          # QUIET, NORMAL, LOG or FULL
-WRITE_XML              Y               # Write XML file (Y/N)?
+WRITE_XML              N               # Write XML file (Y/N)?
 XML_NAME               scamp.xml       # Filename for XML output
 XSL_URL                file:///usr/share/scamp/scamp.xsl
                                        # Filename for XSL style-sheet

@@ -93,6 +93,9 @@ ENV/
 # Project-specific formats
 *~
 *.fits
+*.fit
+*.fts
+*.psf
 *.cat
 *.xml
 *log*/
