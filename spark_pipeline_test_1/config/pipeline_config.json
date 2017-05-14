@@ -1,4 +1,5 @@
 {
+  "observation_id":"GRB130427",
   "input_images_format":"fit",
   "input_tech_frames_format":"fit",
   "sex_config_file_name":"default.sex",
@@ -20,8 +21,6 @@
 	  "ERRTHETA_WORLD",
 	  "XWIN_WORLD",
 	  "YWIN_WORLD",
-	  "X_WORLD",
-	  "Y_WORLD",
 	  "FLUX_AUTO",
 	  "FLUX_MAX",
 	  "FLUX_RADIUS",
@@ -31,6 +30,17 @@
 	  "FLAGS",
 	  "ELONGATION"
  ],
+  "psfex_required_catalog_params":[
+  	  "VIGNET(20,20)",
+  	  "XWIN_IMAGE",
+	  "YWIN_IMAGE",
+	  "FLUX_RADIUS",
+	  "FLUX_APER(1)",
+	  "FLUXERR_APER(1)",
+	  "FLAGS",
+	  "ELONGATION",
+	  "SNR_WIN"
+  ],
   "pipeline_stages":{
 	"preparation":{
 		"previous_stage":"none",
@@ -51,9 +61,11 @@
 		"next_stage":"images_coaddition",
 		"stage_params":{
 			"input_params":{
+				"images_format":"fit",
 				"output_from_stages":["preparation"]
 			},
 			"output_params":{
+				"images_format":"fits",
 				"input_for_stages":["images_coaddition"]
 			},
 			"stage_mapred_type":"map"
@@ -138,6 +150,8 @@
 				"step_params":{
 					"basic_function":"calculate_calibration",
 					"input_params":{
+						"catalogs_format":"cat",
+						"catalogs_dir":"temp",
 						"output_from_steps":["create_calibration_catalogs"]
 					},
 					"output_params":{
@@ -178,6 +192,7 @@
 						"output_from_steps":["basic_reduction,create_calibration_headers"]
 					},
 					"output_params":{
+						"swarp_separately":"true",
 						"images_format":"fits",
 						"weightmaps_format":"weight.fits",
 						"images_dir":"images",
@@ -214,7 +229,8 @@
 					"output_params":{
 						"catalogs_format":"cat",
 						"catalogs_dir":"catalogs",
-						"input_for_steps":["model_psf_calibrated_images_catalogs"]
+						"input_for_steps":["model_psf_calibrated_images_catalogs"],
+						"check_params_for_psfex_required":"true"
 					},
 					"software_params":{
 						"code":"SExtractor",
@@ -240,8 +256,6 @@
 							"ERRA_WORLD",
 							"ERRB_WORLD",
 							"ERRTHETA_WORLD",
-							"X_WORLD",
-							"Y_WORLD",
 							"XWIN_WORLD",
 							"YWIN_WORLD",
 							"FLUX_AUTO",
@@ -271,15 +285,29 @@
 						"output_from_steps":["create_calibrated_images_catalogs"]
 					},
 					"output_params":{
-						"catalogs_format":"psf",
-						"catalogs_dir":"catalogs",
-						"input_for_steps":["create_calibrated_images_catalogs_psf"]
+						"psf_models_format":"psf",
+						"psf_models_dir":"temp",
+						"input_for_steps":["create_calibrated_images_catalogs_psf"],
+						"calculate_psf_separately":"true"
 					},
 					"software_params":{
 						"code":"PSFEx",
 						"config_file":"default.psfex",
 				 		"temp_path":"temp",
-				 		"config":{}
+				 		"config":{
+							"CENTER_KEYS":"XWIN_IMAGE,YWIN_IMAGE",
+							"PSFVAR_KEYS":"XWIN_IMAGE,YWIN_IMAGE",
+							"PHOTFLUX_KEY":"FLUX_AUTO",
+							"PHOTFLUXERR_KEY":"FLUXERR_AUTO",
+							"CHECKPLOT_DEV":"NULL",
+							"CHECKPLOT_TYPE":"NONE",
+							"CHECKIMAGE_TYPE":"NONE",
+							"STABILITY_TYPE":"EXPOSURE",
+							"SAMPLE_AUTOSELECT":"N",
+							"SAMPLE_FWHMRANGE":"0.0,100.0",
+							"SAMPLE_VARIABILITY":"0.9",
+							"SAMPLE_MINSN":"20"
+						}
 					},
 					"data_handle":{}
 				}
@@ -292,19 +320,54 @@
 					"input_params":{
 						"images_format":"fits",
 						"images_dir":"images",
+						"psf_models_format":"psf",
+						"psf_models_dir":"temp",
 						"output_from_steps":["calibrate_images,model_psf_calibrated_images_catalogs"]
 					},
 					"output_params":{
 						"catalogs_format":"psf.cat",
 						"catalogs_dir":"catalogs",
-						"input_for_steps":[]
+						"input_for_steps":[],
+						"check_params_for_psfex_required":"true"
 					},
 					"software_params":{
 						"code":"SExtractor",
 						"config_file":"default.sex",
 				 		"temp_path":"temp",
-				 		"config":{},
-					    "params":[]
+				 		"config":{
+				 			"FILTER":"Y",
+				   			"FILTER_NAME":"gauss_4.0_7x7.conv",
+				   			"ANALYSIS_THRESH":"3",
+				   			"DETECT_THRESH":"3",
+				   			"CATALOG_TYPE":"FITS_LDAC"
+				 		},
+					    "params":[
+							"NUMBER",
+							"EXT_NUMBER",
+							"XWIN_IMAGE",
+							"YWIN_IMAGE",
+							"ERRAWIN_IMAGE",
+							"ERRBWIN_IMAGE",
+							"ERRTHETAWIN_IMAGE",
+							"XWIN_WORLD",
+							"YWIN_WORLD",
+							"FLUX_AUTO",
+							"FLUXERR_AUTO",
+							"FLAGS",
+							"FLAGS_WEIGHT",
+							"FLUX_RADIUS",
+							"ELONGATION",
+							"MAG_AUTO",
+							"MAGERR_AUTO",
+							"ALPHAPSF_SKY",
+							"DELTAPSF_SKY",
+							"ERRX2PSF_WORLD",
+							"ERRY2PSF_WORLD",
+							"FLUX_PSF",
+							"FLUXERR_PSF",
+							"MAG_PSF",
+							"MAGERR_PSF"
+						]
 					},
 					"data_handle":{
 						"params_from_fits_header":{
@@ -320,6 +383,7 @@
 		"next_stage":"none",
 		"stage_params":{
 			"input_params":{
+				"images_format":"fits",
 				"output_from_stages":["images_calibration"]
 			},
 			"output_params":{
@@ -339,7 +403,7 @@
 						"output_from_steps":[]
 					},
 					"output_params":{
-						"images_format":"fits",
+						"images_format":"coadded.fits",
 						"weightmaps_format":"weight.fits",
 						"images_dir":"stacks",
 						"weightmaps_dir":"stacks",
@@ -359,9 +423,9 @@
 						    "RESAMPLE_DIR":"temp",
 						    "DELETE_TMPFILES":"Y"
 					    }
-					}
-				},
-				"data_handle":{}
+					},
+					"data_handle":{}
+				}
 			},
 			"create_coadded_image_catalog":{
 				"previous_step":"coadd_calibrated_images",
@@ -369,14 +433,15 @@
 				"step_params":{
 					"basic_function":"create_catalogs",
 					"input_params":{
-						"images_format":"fits",
+						"images_format":"coadded.fits",
 						"images_dir":"stacks",
 						"output_from_steps":["coadd_calibrated_images"]
 					},
 					"output_params":{
 						"catalogs_format":"coadded.cat",
 						"catalogs_dir":"catalogs",
-						"input_for_steps":["model_psf_coadded_image_catalog"]
+						"input_for_steps":["model_psf_coadded_image_catalog"],
+						"check_params_for_psfex_required":"true"
 					},
 					"software_params":{
 						"code":"SExtractor",
@@ -402,8 +467,6 @@
 						    "ERRA_WORLD",
 						    "ERRB_WORLD",
 						    "ERRTHETA_WORLD",
-						    "X_WORLD",
-						    "Y_WORLD",
 						    "XWIN_WORLD",
 						    "YWIN_WORLD",
 						    "FLUX_AUTO",
@@ -428,23 +491,36 @@
 				 "step_params":{
 					"basic_function":"calculate_psf",
 					"input_params":{
-						"catalogs_format":"coaded.cat",
+						"catalogs_format":"coadded.cat",
 						"catalogs_dir":"catalogs",
 						"output_from_steps":["create_coadded_image_catalog"]
 					},
 					"output_params":{
-						"catalogs_format":"coaded.psf",
-						"catalogs_dir":"catalogs",
+						"psf_models_format":"coadded.psf",
+						"psf_models_dir":"temp",
 						"input_for_steps":["create_coadded_image_catalog_psf"]
 					},
 					"software_params":{
 						"code":"PSFEx",
 						"config_file":"default.psfex",
 				 		"temp_path":"temp",
-				 		"config":{}
-					}
-				},
-				"data_handle":{}
+				 		"config":{
+							"CENTER_KEYS":"XWIN_IMAGE,YWIN_IMAGE",
+							"PSFVAR_KEYS":"XWIN_IMAGE,YWIN_IMAGE",
+							"PHOTFLUX_KEY":"FLUX_AUTO",
+							"PHOTFLUXERR_KEY":"FLUXERR_AUTO",
+							"CHECKPLOT_DEV":"NULL",
+							"CHECKPLOT_TYPE":"NONE",
+							"CHECKIMAGE_TYPE":"NONE",
+							"STABILITY_TYPE":"EXPOSURE",
+							"SAMPLE_AUTOSELECT":"N",
+							"SAMPLE_FWHMRANGE":"0.0,100.0",
+							"SAMPLE_VARIABILITY":"0.9",
+							"SAMPLE_MINSN":"20"
+						}
+					},
+					"data_handle":{}
+				}
 			},
 			"create_coadded_image_catalog_psf":{
 				 "previous_step":"model_psf_coadded_image_catalog",
@@ -452,29 +528,63 @@
 				 "step_params":{
 					"basic_function":"create_catalogs",
 					"input_params":{
-						"images_format":"fits",
+						"images_format":"coadded.fits",
 						"images_dir":"stacks",
+						"psf_models_format":"coadded.psf",
+						"psf_models_dir":"temp",
 						"output_from_steps":["model_psf_coadded_image_catalog,coadd_calibrated_images"]
 					},
 					"output_params":{
 						"catalogs_format":"psf.coadded.cat",
 						"catalogs_dir":"catalogs",
-						"input_for_steps":[]
+						"input_for_steps":[],
+						"check_params_for_psfex_required":"true"
 					},
 					"software_params":{
 						"code":"SExtractor",
 						"config_file":"default.sex",
 				 		"temp_path":"temp",
-				 		"config":{},
-					    "params":[]
+				 		"config":{
+				 			"FILTER":"N",
+						    "FILTER_NAME":"gauss_4.0_7x7.conv",
+						    "ANALYSIS_THRESH":"3",
+						    "DETECT_THRESH":"3",
+						    "CATALOG_TYPE":"FITS_LDAC"
+				 		},
+					    "params":[
+					    	"NUMBER",
+							"EXT_NUMBER",
+							"XWIN_IMAGE",
+							"YWIN_IMAGE",
+							"ERRAWIN_IMAGE",
+							"ERRBWIN_IMAGE",
+							"ERRTHETAWIN_IMAGE",
+							"XWIN_WORLD",
+							"YWIN_WORLD",
+							"FLUX_AUTO",
+							"FLUXERR_AUTO",
+							"FLAGS",
+							"FLAGS_WEIGHT",
+							"FLUX_RADIUS",
+							"ELONGATION",
+							"MAG_AUTO",
+							"MAGERR_AUTO",
+							"ALPHAPSF_SKY",
+							"DELTAPSF_SKY",
+							"ERRX2PSF_WORLD",
+							"ERRY2PSF_WORLD",
+							"FLUX_PSF",
+							"FLUXERR_PSF",
+							"MAG_PSF",
+							"MAGERR_PSF"
+					    ]
 					},
 					"data_handle":{
 						"params_from_fits_header":{
 							"GAIN":"GAIN"
 						}
 					}
-				},
-				"data_handle":{}
+				}
 			}
 		}
 	}
