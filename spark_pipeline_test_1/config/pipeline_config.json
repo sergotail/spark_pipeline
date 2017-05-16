@@ -1,5 +1,12 @@
 {
   "observation_id":"GRB130427",
+  "exposure_time_keyword":"EXPTIME",
+  "exposure_type_keyword":"EXPTYPE",
+  "images_split_chunk_size":"6",
+  "bias_exposure_type":"Bias",
+  "dark_exposure_type":"Dark",
+  "flat_exposure_type":"Flat",
+  "images_exposure_type":"Light",
   "input_images_format":"fit",
   "input_tech_frames_format":"fit",
   "sex_config_file_name":"default.sex",
@@ -54,7 +61,101 @@
 			},
 			"stage_mapred_type":"none"
 		},
-		"stage_steps":{}
+		"stage_steps":{
+			"fits_preprocessing_common":{},
+			"tech_frames_preprocessing":{
+				"previous_step":"fits_preprocessing_common",
+				"next_step":"none",
+				"step_params":{
+					"basic_function":"compute_supers",
+					"input_params":{
+						"images_exp_times_secs":["60."],
+						"images_filter_keyword":"FILTER",
+						"images_filters":["R"],
+						"tech_frames":{
+							"frames_dir":"temp",
+							"use_frames":[
+								"bias",
+								"dark",
+								"flat"],
+							"bias":{
+								"format":"fit",
+								"sub_dir":"bias",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Bias",
+								"gain_keyword":"GAIN",
+								"ccdtype":""
+							},
+							"dark":{
+								"format":"fit",
+								"sub_dir":"dark",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Dark",
+								"exp_time_keyword":"EXPTIME",
+								"gain_keyword":"GAIN",
+								"ccdtype":""
+							},
+							"flat":{
+								"format":"fit",
+								"sub_dir":"flat",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Light",
+								"filter_keyword":"FILTER",
+								"exp_time_keyword":"EXPTIME",
+								"gain_keyword":"GAIN",
+								"ccdtype":""
+							}
+						},
+						"weightmaps":{
+							"bad_pixels":{}
+						},
+						"output_from_steps":[]
+					},
+					"output_params":{
+						"tech_frames":{
+							"frames_dir":"temp",
+							"bias":{
+								"name":"superbias",
+								"format":"fits",
+								"sub_dir":".",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Bias"
+							},
+							"dark":{
+								"name":"superdark",
+								"format":"fit",
+								"sub_dir":".",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Dark"
+							},
+							"flat":{
+								"name":"superflat",
+								"format":"fit",
+								"sub_dir":".",
+								"type_keyword":"EXPTYPE",
+								"type_keyword_value":"Flat"
+							}
+						},
+						"weightmaps":{
+							"bad_pixels":{}
+						},
+						"input_for_steps":["create_calibration_catalogs"]
+					},
+					"software_params":{
+						"code":"IRAF",
+						"config_file":"login.cl",
+				 		"temp_path":"temp",
+				 		"config":{
+				 			"INSTRUMENT_DIR":"config",
+				 			"INSTRUMENT_FILE":"instrument.dat"
+				 			
+				 			
+				 		}
+					},
+					"data_handle":{}
+				}
+			}
+		}
 	},
 	"images_calibration":{
 		"previous_stage":"preparation",
@@ -62,6 +163,7 @@
 		"stage_params":{
 			"input_params":{
 				"images_format":"fit",
+				"images_dir":"temp",
 				"output_from_stages":["preparation"]
 			},
 			"output_params":{
@@ -384,6 +486,7 @@
 		"stage_params":{
 			"input_params":{
 				"images_format":"fits",
+				"images_dir":"images",
 				"output_from_stages":["images_calibration"]
 			},
 			"output_params":{
