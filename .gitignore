@@ -104,4 +104,5 @@ ENV/
 *images*/
 *stacks*/
 *.ipynb_checkpoints/
+*metastore_db/
 
