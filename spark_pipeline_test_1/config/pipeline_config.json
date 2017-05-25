@@ -2,7 +2,7 @@
   "observation_id":"GRB130427",
   "exposure_time_keyword":"EXPTIME",
   "exposure_type_keyword":"EXPTYPE",
-  "images_split_chunk_size":"6",
+  "images_split_chunk_size":"20",
   "bias_exposure_type":"Bias",
   "dark_exposure_type":"Dark",
   "flat_exposure_type":"Flat",
@@ -199,7 +199,7 @@
 				"step_params":{
 					"basic_function":"create_catalogs",
 					"input_params":{
-						"images_format":"fit",
+						"images_format":"fts",
 						"images_dir":"temp",
 						"output_from_steps":["basic_reduction"]
 					},
@@ -225,18 +225,19 @@
 							"EXT_NUMBER",
 							"XWIN_IMAGE",
 							"YWIN_IMAGE",
-							"AWIN_IMAGE",
-							"BWIN_IMAGE",
 							"ERRAWIN_IMAGE",
 							"ERRBWIN_IMAGE",
 							"ERRTHETAWIN_IMAGE",
+							"XWIN_WORLD",
+							"YWIN_WORLD",
 							"FLUX_AUTO",
-							"FLUX_MAX",
-							"MAG_AUTO",
 							"FLUXERR_AUTO",
 							"FLAGS",
+							"FLAGS_WEIGHT",
 							"FLUX_RADIUS",
-							"ELONGATION"
+							"ELONGATION",
+							"MAG_AUTO",
+							"MAGERR_AUTO"
 				    	]
 					},
 					"data_handle":{
@@ -350,23 +351,19 @@
 							"EXT_NUMBER",
 							"XWIN_IMAGE",
 							"YWIN_IMAGE",
-							"AWIN_IMAGE",
-							"BWIN_IMAGE",
 							"ERRAWIN_IMAGE",
 							"ERRBWIN_IMAGE",
 							"ERRTHETAWIN_IMAGE",
-							"ERRA_WORLD",
-							"ERRB_WORLD",
-							"ERRTHETA_WORLD",
 							"XWIN_WORLD",
 							"YWIN_WORLD",
 							"FLUX_AUTO",
-							"FLUX_MAX",
-							"MAG_AUTO",
 							"FLUXERR_AUTO",
 							"FLAGS",
+							"FLAGS_WEIGHT",
 							"FLUX_RADIUS",
-							"ELONGATION"
+							"ELONGATION",
+							"MAG_AUTO",
+							"MAGERR_AUTO"
 				    	]
 					},
 					"data_handle":{
